@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -40,61 +41,73 @@ func TestPadding(t *testing.T) {
 				{0, 0, 0},
 			},
 		},
-		// "2": {
-		// 	mn: [][]int{
-		// 		{1, 2, 3},
-		// 		{4, 5, 6},
-		// 		{7, 8, 9},
-		// 	},
-		// 	want: [][]int{
-		// 		{7, 4, 1},
-		// 		{8, 5, 2},
-		// 		{9, 6, 3},
-		// 	},
-		// },
-		// "3": {
-		// 	mn: [][]int{
-		// 		{1, 2, 3, 4},
-		// 		{5, 6, 7, 8},
-		// 		{9, 10, 11, 12},
-		// 		{13, 14, 15, 16},
-		// 	},
-		// 	want: [][]int{
-		// 		{13, 9, 5, 1},
-		// 		{14, 10, 6, 2},
-		// 		{15, 11, 7, 3},
-		// 		{16, 12, 8, 4},
-		// 	},
-		// },
-		// "5": {
-		// 	mn: [][]int{
-		// 		{1, 2, 3, 4, 5, 6},
-		// 		{7, 8, 9, 10, 11, 12},
-		// 		{13, 14, 15, 16, 17, 18},
-		// 		{19, 20, 21, 22, 23, 24},
-		// 		{25, 26, 27, 28, 29, 30},
-		// 		{31, 32, 33, 34, 35, 36},
-		// 	},
-		// 	want: [][]int{
-		// 		{31, 25, 19, 13, 7, 1},
-		// 		{32, 26, 20, 14, 8, 2},
-		// 		{33, 27, 21, 15, 9, 3},
-		// 		{34, 28, 22, 16, 10, 4},
-		// 		{35, 29, 23, 17, 11, 5},
-		// 		{36, 30, 24, 18, 12, 6},
-		// 	},
-		// },
+		"4": {
+			mn: [][]int{
+				{1, 2, 3, 4, 5},
+				{6, 7, 8, 0, 10},
+				{11, 12, 13, 14, 15},
+				{16, 17, 18, 19, 20},
+			},
+			want: [][]int{
+				{1, 2, 3, 0, 5},
+				{0, 0, 0, 0, 0},
+				{11, 12, 13, 0, 15},
+				{16, 17, 18, 0, 20},
+			},
+		},
+		"5": {
+			mn: [][]int{
+				{1, 2, 3, 4, 5, 6},
+				{7, 8, 9, 10, 11, 12},
+				{13, 14, 15, 16, 17, 18},
+				{19, 20, 21, 22, 23, 24},
+				{25, 26, 27, 28, 29, 30},
+				{31, 32, 33, 34, 35, 0},
+			},
+			want: [][]int{
+				{1, 2, 3, 4, 5, 0},
+				{7, 8, 9, 10, 11, 0},
+				{13, 14, 15, 16, 17, 0},
+				{19, 20, 21, 22, 23, 0},
+				{25, 26, 27, 28, 29, 0},
+				{0, 0, 0, 0, 0, 0},
+			},
+		},
+		"6": {
+			mn: [][]int{
+				{1, 2, 3, 4, 5, 6},
+				{7, 8, 9, 10, 11, 12},
+				{13, 0, 15, 16, 17, 18},
+				{19, 20, 21, 22, 23, 24},
+				{25, 26, 27, 28, 29, 30},
+				{31, 32, 33, 34, 35, 0},
+			},
+			want: [][]int{
+				{1, 0, 3, 4, 5, 0},
+				{7, 0, 9, 10, 11, 0},
+				{0, 0, 0, 0, 0, 0},
+				{19, 0, 21, 22, 23, 0},
+				{25, 0, 27, 28, 29, 0},
+				{0, 0, 0, 0, 0, 0},
+			},
+		},
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			// fmt.Println(tt.mn)
 			printMatrix(tt.mn)
 			// printMatrix(ninetyDegreeRotation(tt.mn))
-			mn := padding(tt.mn)
+			nmn := padding(tt.mn)
+			printMatrix(nmn)
+			if !reflect.DeepEqual(nmn, tt.want) {
+				t.Errorf("got: %v, want: %v", nmn, tt.want)
+			}
+
+			mn := padding2(tt.mn)
 			printMatrix(mn)
-			// if !reflect.DeepEqual(tt.mn, tt.want) {
-			// 	t.Errorf("got: %v, want: %v", tt.mn, tt.want)
-			// }
+			if !reflect.DeepEqual(mn, tt.want) {
+				t.Errorf("got: %v, want: %v", mn, tt.want)
+			}
 		})
 	}
 }
@@ -116,18 +129,52 @@ func padding(mn [][]int) [][]int {
 			if v2 == 0 {
 				row = append(row, i)
 				column = append(column, j)
-				// fmt.Println(i, j, mn[i][j])
 			}
 		}
 	}
-	fmt.Println(row)
-	fmt.Println(column)
 
-	// var nmn [][]int // new m*n
-	// for i := 0; i < len(mn); i++ {
-	// 	for j := 0; j < len(mn[0]); j++ {
+	nmn := make([][]int, len(mn)) // new m*n
+	for i := 0; i < len(mn); i++ {
+		nmn[i] = make([]int, len(mn[0]))
+		for j := 0; j < len(mn[0]); j++ {
+			if isIn(row, i) || isIn(column, j) {
+				nmn[i][j] = 0
+				continue
+			}
+			nmn[i][j] = mn[i][j]
+		}
+	}
+	return nmn
+}
 
-	// 	}
-	// }
+func isIn(is []int, i int) bool {
+	for _, v := range is {
+		if v == i {
+			return true
+		}
+	}
+	return false
+}
+
+func padding2(mn [][]int) [][]int {
+	row := make([]bool, len(mn))
+	column := make([]bool, len(mn[0]))
+	for i, v1 := range mn {
+		for j, v2 := range v1 {
+			if v2 == 0 {
+				row[i] = true
+				column[j] = true
+			}
+		}
+	}
+
+	for i := 0; i < len(mn); i++ {
+		for j := 0; j < len(mn[0]); j++ {
+			if row[i] || column[j] {
+				mn[i][j] = 0
+				continue
+			}
+		}
+	}
 	return mn
 }

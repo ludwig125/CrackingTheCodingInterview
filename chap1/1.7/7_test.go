@@ -205,20 +205,3 @@ func ninetyDegreeRotation2(nn [][]int) {
 		}
 	}
 }
-
-// func ninetyDegreeRotation2(nn [][]int) {
-// 	begin := 0
-// 	end := len(nn) - 1
-// 	for layer := 0; layer < len(nn)/2; layer++ {
-// 		// 外周の一周の数字を９０度回転
-// 		for offset := 0; offset < (end - begin); offset++ {
-// 			tmp := nn[begin][begin+offset]
-// 			nn[begin][begin+offset] = nn[end-offset][begin]
-// 			nn[end-offset][begin] = nn[end][end-offset]
-// 			nn[end][end-offset] = nn[begin+offset][end]
-// 			nn[begin+offset][end] = tmp
-// 		}
-// 		begin = begin + 1
-// 		end = end - 1
-// 	}
-// }
