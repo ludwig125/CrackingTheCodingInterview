@@ -6,155 +6,36 @@ import (
 	"testing"
 )
 
-func TestSingleLinkedListTrim(t *testing.T) {
+func TestSingleLinkedListPalindrome(t *testing.T) {
 	tests := map[string]struct {
 		list []int
-		want []int
+		want bool
 	}{
-		"0": {
-			list: []int{10},
-			want: nil,
-		},
 		"1": {
-			list: []int{10, 11},
-			want: []int{10},
-		},
-	}
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
-			// var l singleLinkedList
-			l := newSingleLinkedList(tt.list...)
-			l.trim()
-
-			l.print()
-			// fmt.Printf("after trim: %+v %t\n", l, (*l == singleLinkedList{}))
-			if !reflect.DeepEqual(l.getValues(), tt.want) {
-				t.Errorf("got: %v, want: %v", l.getValues(), tt.want)
-			}
-		})
-	}
-}
-
-func TestSingleLinkedListDelete(t *testing.T) {
-	tests := map[string]struct {
-		list   []int
-		target int
-		want   []int
-	}{
-		"0": {
-			list:   []int{10},
-			target: 10,
-			want:   nil,
-		},
-		"1": {
-			list:   []int{11},
-			target: 10,
-			want:   []int{11},
+			list: []int{1, 2, 3},
+			want: false,
 		},
 		"2": {
-			list:   []int{10, 11},
-			target: 10,
-			want:   []int{11},
+			list: []int{1, 2, 1},
+			want: true,
 		},
 		"3": {
-			list:   []int{11, 10},
-			target: 10,
-			want:   []int{11},
+			list: []int{1, 2, 3, 4, 5, 4, 3, 2, 1},
+			want: true,
 		},
 		"4": {
-			list:   []int{11, 10, 10},
-			target: 10,
-			want:   []int{11},
-		},
-		"5": {
-			list:   []int{10, 11, 10},
-			target: 10,
-			want:   []int{11},
-		},
-		"6": {
-			list:   []int{10, 10, 11},
-			target: 10,
-			want:   []int{11},
-		},
-		"7": {
-			list:   []int{10, 10, 10},
-			target: 10,
-			want:   nil,
-		},
-		"8": {
-			list:   []int{10, 11, 12},
-			target: 10,
-			want:   []int{11, 12},
-		},
-		"9": {
-			list:   []int{10, 11, 12, 13},
-			target: 9,
-			want:   []int{10, 11, 12, 13},
-		},
-	}
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
-			l := newSingleLinkedList(tt.list...)
-			l.delete(tt.target)
-
-			l.print()
-			if !reflect.DeepEqual(l.getValues(), tt.want) {
-				t.Errorf("got: %v, want: %v", l.getValues(), tt.want)
-			}
-		})
-		// t.Run(name, func(t *testing.T) {
-		// 	l := newSingleLinkedList(tt.list...)
-		// 	l.delete2(tt.target)
-		// 	l.print()
-		// 	if !reflect.DeepEqual(l.getValues(), tt.want) {
-		// 		t.Errorf("got: %v, want: %v", l.getValues(), tt.want)
-		// 	}
-		// })
-	}
-}
-
-func TestSingleLinkedListDeleteDup(t *testing.T) {
-	tests := map[string]struct {
-		list []int
-		want []int
-	}{
-		"0": {
-			list: []int{10},
-			want: []int{10},
-		},
-		"1": {
-			list: []int{10, 10},
-			want: []int{10},
-		},
-		"2": {
-			list: []int{10, 11},
-			want: []int{10, 11},
-		},
-		"3": {
-			list: []int{10, 11, 12, 13},
-			want: []int{10, 11, 12, 13},
-		},
-		"4": {
-			list: []int{10, 11, 12, 13, 11},
-			want: []int{10, 11, 12, 13},
-		},
-		"5": {
-			list: []int{10, 10, 11, 12, 13},
-			want: []int{10, 11, 12, 13},
-		},
-		"6": {
-			list: []int{10, 10, 10, 10},
-			want: []int{10},
+			list: []int{1, 2, 3, 4, 5, 6, 3, 2, 1},
+			want: false,
 		},
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			l := newSingleLinkedList(tt.list...)
 			l.print()
-
-			l.deleteDuplicated()
-			if !reflect.DeepEqual(l.getValues(), tt.want) {
-				t.Errorf("got: %v, want: %v", l.getValues(), tt.want)
+			got := l.isPalindrome()
+			// // fmt.Println("value", sum1)
+			if got != tt.want {
+				t.Errorf("got: %v, want: %v", got, tt.want)
 			}
 		})
 	}
@@ -184,6 +65,9 @@ func (s *singleLinkedList) print() {
 }
 
 func (s *singleLinkedList) getValues() []int {
+	if s == nil {
+		return nil
+	}
 	// fmt.Println("s.value", s.value, )
 	var l []int
 	if (*s == singleLinkedList{}) {
@@ -275,27 +159,6 @@ func (s *singleLinkedList) del(target int) {
 	nexts.del(target)
 }
 
-// // 上のdelete関数の再帰をつかわない書き直し
-// func (s *singleLinkedList) delete2(target int) {
-
-// 	current := s
-// 	previous := &singleLinkedList{next: current}
-// 	for {
-// 		fmt.Println("this", current.getValues(), previous.getValues())
-// 		if current.isLast() {
-// 			break
-// 		}
-// 		// if current.value == target {
-// 		// 	previous.next = current.next
-// 		// }
-// 		previous = current
-// 		current = current.next
-
-// 		*s.next = current
-// 	}
-// 	// *s = *previous.next
-// }
-
 func (s *singleLinkedList) deleteDuplicated() {
 	// var m map[int]bool
 	m := make(map[int]bool, len(s.getValues()))
@@ -326,12 +189,79 @@ func (s *singleLinkedList) isLast() bool {
 	return true
 }
 
-// func (s *singleLinkedList) isBeforeLast() bool {
-// 	if s.next == nil {
-// 		return false
+// func (s *singleLinkedList) getKFromTail(k int) *singleLinkedList {
+// 	var list []*singleLinkedList
+// 	list = s.addList(list)
+// 	// fmt.Println("!this", list)
+// 	if len(list) < k {
+// 		// fmt.Println("!this1")
+// 		return nil
 // 	}
-// 	if s.next.next == nil {
-// 		return true
-// 	}
-// 	return false
+// 	// fmt.Println("!this2")
+// 	return list[len(list)-k]
 // }
+
+// func (s *singleLinkedList) addList(list []*singleLinkedList) []*singleLinkedList {
+// 	// fmt.Println("this", s)
+// 	list = append(list, s)
+// 	// fmt.Println("this1", list[0])
+// 	if s.isLast() {
+// 		// fmt.Println("this2", list[0])
+// 		return list
+// 	}
+// 	// fmt.Println("thi3")
+
+// 	return s.next.addList(list)
+// }
+
+// func (s *singleLinkedList) summedUpList() int {
+// 	return s.summedUpListInOrder(1, 0)
+// }
+
+// func (s *singleLinkedList) summedUpListInOrder(order, sum int) int {
+// 	// fmt.Println("num", order*s.value)
+// 	// sum += order * s.value
+// 	if s.isLast() {
+// 		// fmt.Println("order", order)
+// 		return order*s.value + sum
+// 	}
+// 	return s.next.summedUpListInOrder(order*10, sum+order*s.value)
+// }
+
+// func parseSummedUpList(n int) *singleLinkedList {
+// 	s := &singleLinkedList{}
+// 	s.parseSummedUpListInOrder(n)
+// 	// fmt.Println("value", s.getValues())
+// 	return s
+// }
+
+// func (s *singleLinkedList) parseSummedUpListInOrder(n int) {
+// 	if n < 10 {
+// 		// fmt.Println("htis", n)
+// 		*s = singleLinkedList{value: n % 10}
+// 		return
+// 	}
+// 	// fmt.Println(n % 10)
+// 	*s = singleLinkedList{value: n % 10, next: &singleLinkedList{}}
+// 	// fmt.Println("v", s.getValues())
+// 	s.next.parseSummedUpListInOrder(n / 10)
+// }
+
+func (s *singleLinkedList) isPalindrome() bool {
+
+	fmt.Println("values", s.getValues())
+
+	reversed := reverseSlice(s.getValues())
+	fmt.Println("reverse values", reversed)
+
+	return reflect.DeepEqual(s.getValues(), newSingleLinkedList(reversed...).getValues())
+	// return true
+}
+
+func reverseSlice(l []int) []int {
+	l2 := make([]int, 0, len(l))
+	for i := len(l) - 1; i >= 0; i-- {
+		l2 = append(l2, l[i])
+	}
+	return l2
+}
