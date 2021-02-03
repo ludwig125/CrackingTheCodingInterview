@@ -189,64 +189,6 @@ func (s *singleLinkedList) isLast() bool {
 	return true
 }
 
-// func (s *singleLinkedList) getKFromTail(k int) *singleLinkedList {
-// 	var list []*singleLinkedList
-// 	list = s.addList(list)
-// 	// fmt.Println("!this", list)
-// 	if len(list) < k {
-// 		// fmt.Println("!this1")
-// 		return nil
-// 	}
-// 	// fmt.Println("!this2")
-// 	return list[len(list)-k]
-// }
-
-// func (s *singleLinkedList) addList(list []*singleLinkedList) []*singleLinkedList {
-// 	// fmt.Println("this", s)
-// 	list = append(list, s)
-// 	// fmt.Println("this1", list[0])
-// 	if s.isLast() {
-// 		// fmt.Println("this2", list[0])
-// 		return list
-// 	}
-// 	// fmt.Println("thi3")
-
-// 	return s.next.addList(list)
-// }
-
-// func (s *singleLinkedList) summedUpList() int {
-// 	return s.summedUpListInOrder(1, 0)
-// }
-
-// func (s *singleLinkedList) summedUpListInOrder(order, sum int) int {
-// 	// fmt.Println("num", order*s.value)
-// 	// sum += order * s.value
-// 	if s.isLast() {
-// 		// fmt.Println("order", order)
-// 		return order*s.value + sum
-// 	}
-// 	return s.next.summedUpListInOrder(order*10, sum+order*s.value)
-// }
-
-// func parseSummedUpList(n int) *singleLinkedList {
-// 	s := &singleLinkedList{}
-// 	s.parseSummedUpListInOrder(n)
-// 	// fmt.Println("value", s.getValues())
-// 	return s
-// }
-
-// func (s *singleLinkedList) parseSummedUpListInOrder(n int) {
-// 	if n < 10 {
-// 		// fmt.Println("htis", n)
-// 		*s = singleLinkedList{value: n % 10}
-// 		return
-// 	}
-// 	// fmt.Println(n % 10)
-// 	*s = singleLinkedList{value: n % 10, next: &singleLinkedList{}}
-// 	// fmt.Println("v", s.getValues())
-// 	s.next.parseSummedUpListInOrder(n / 10)
-// }
-
 func (s *singleLinkedList) isPalindrome() bool {
 
 	fmt.Println("values", s.getValues())
